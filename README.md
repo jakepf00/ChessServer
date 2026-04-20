@@ -1,1 +1,2 @@
 # ChessServer
+Simple chess server.
