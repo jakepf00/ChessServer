@@ -18,7 +18,7 @@ func main() {
            [8]string{ "P", "P", "P", "P", "P", "P", "P", "P" },
            [8]string{ "R", "B", "N", "Q", "K", "N", "B", "R" },
         },
-        WhiteTurn: true, CastlingRights: 4, EnPassantSquare: 0
+        WhiteTurn: true, CastlingRights: 4, EnPassantSquare: 0,
     }
 
     http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
