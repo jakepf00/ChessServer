@@ -1,46 +1,46 @@
 package main
 
 import (
-       "net/http"
+	"net/http"
 )
 
 func main() {
 
-    // Expecting that all requests have the users' username in the header , --header "Username: <username>"
+	// Expecting that all requests have the users' username in the header , --header "Username: <username>"
 
-    http.HandleFunc("/", Chess)
+	http.HandleFunc("/", Chess)
 
-    // StartGame - POST
-    // Pass in ID of opponent (username)
-    // We allow user combinations to have multiple concurrent games -- starting a game always creates a new game id and a list is also returned with game ids for this particualr user pair
-    // Client: {
-    //   "username" : "<username>"
-    // } 
-    // Response: {
-    //  "starting_game_state": {
-    //      "white_user": <id>,
-    //      "black_user": <id>
-    // },
-    //  "new_game_id": "1234"
-    //  "existing_ids": ["5678"]
-    // }
-    http.HandleFunc("/StartGame", StartGame)
+	// StartGame - POST
+	// Pass in ID of opponent (username)
+	// We allow user combinations to have multiple concurrent games -- starting a game always creates a new game id and a list is also returned with game ids for this particualr user pair
+	// Client: {
+	//   "username" : "<username>"
+	// }
+	// Response: {
+	//  "starting_game_state": {
+	//      "white_user": <id>,
+	//      "black_user": <id>
+	// },
+	//  "new_game_id": "1234"
+	//  "existing_ids": ["5678"]
+	// }
+	http.HandleFunc("/StartGame", StartGame)
 
-    // GetGames - GET
-    // Response: {
-    //      <username>: ["<game_id_1>", "<game_id_2>"]
-    // }
-    http.HandleFunc("/GetGames", GetGames)
+	// GetGames - GET
+	// Response: {
+	//      <username>: ["<game_id_1>", "<game_id_2>"]
+	// }
+	http.HandleFunc("/GetGames", GetGames)
 
-    // REQ:  {
-    //  "game_id": <id>
-    // }
-    // RES: {
-    //  "game_state": <Game_State>
-    // }
-    http.HandleFunc("/GetGame", GetGame)
-    http.HandleFunc("/MakeMove", MakeMove)
-    http.HandleFunc("/ViewGame", ViewGame)
+	// REQ:  {
+	//  "game_id": <id>
+	// }
+	// RES: {
+	//  "game_state": <Game_State>
+	// }
+	http.HandleFunc("/GetGame", GetGame)
+	http.HandleFunc("/MakeMove", MakeMove)
+	http.HandleFunc("/ViewGame", ViewGame)
 
-    http.ListenAndServe(":8090", nil)
+	http.ListenAndServe(":8090", nil)
 }
