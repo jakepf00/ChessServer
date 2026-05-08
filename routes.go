@@ -1,13 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 	"math/rand"
 	"net/http"
-
-	"github.com/google/uuid"
 )
 
 type ColorIdMap struct {
@@ -86,10 +86,15 @@ func StartGame(w http.ResponseWriter, r *http.Request) {
 
 	reqBody, _ := io.ReadAll(r.Body)
 
+	// var reqString string
 	var req StartingGameReq
 
 	// NOTE: unmarshalling does not alwyas fit the req body format...
-	err := json.Unmarshal(reqBody, &req)
+	// err := json.Unmarshal(reqBody, &reqString)
+
+	dec := json.NewDecoder(bytes.NewReader(reqBody))
+	dec.DisallowUnknownFields()
+	err := dec.Decode(&req)
 
 	if err != nil {
 		json.NewEncoder(w).Encode(map[string]string{"ERROR": "Error unmarshalling: " + err.Error()})
