@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
-	"io"
 	"math/rand"
 	"net/http"
 )
@@ -84,15 +82,12 @@ func StartGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	reqBody, _ := io.ReadAll(r.Body)
-
-	// var reqString string
 	var req StartingGameReq
 
 	// NOTE: unmarshalling does not alwyas fit the req body format...
 	// err := json.Unmarshal(reqBody, &reqString)
 
-	dec := json.NewDecoder(bytes.NewReader(reqBody))
+	dec := json.NewDecoder(r.Body)
 	dec.DisallowUnknownFields()
 	err := dec.Decode(&req)
 
