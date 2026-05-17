@@ -82,9 +82,9 @@ func getPiece(rep string) string {
 	return "ERR" // should never be reached
 }
 
-// # TODO: could preallocate max bytes potentially... probably not worth it
 func (gs *GameState) GetHtml() string {
 	var to_return strings.Builder
+	to_return.Grow(2048)
 
 	for i, row := range gs.Board {
 		to_return.WriteString("<tr>\n")
@@ -93,5 +93,6 @@ func (gs *GameState) GetHtml() string {
 		}
 		to_return.WriteString("</tr>\n")
 	}
+
 	return getFull(to_return.String())
 }
