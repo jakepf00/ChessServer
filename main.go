@@ -40,7 +40,7 @@ func main() {
 	// }
 	http.HandleFunc("/GetGame", GetGame)
 	http.HandleFunc("/MakeMove", MakeMove)
-	http.HandleFunc("/ViewGame", ViewGame)
+	http.HandleFunc("/ViewGame/", ViewGame)
 
 	// http.Handle("/ViewGame", http.StripPrefix("/ViewGame/", http.FileServer(http.Dir("./static/chess.html"))))
 
