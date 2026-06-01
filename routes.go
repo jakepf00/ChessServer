@@ -112,7 +112,27 @@ func MakeMove(w http.ResponseWriter, r *http.Request) {
 }
 
 func ViewGame(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Chess")
+
+	state := GameState{
+		Board: [8][8]string{
+			{"r", "b", "n", "q", "k", "n", "b", "r"},
+			{"p", "p", "p", "p", "p", "p", "p", "p"},
+			{" ", " ", " ", " ", " ", " ", " ", " "},
+			{" ", " ", " ", " ", " ", " ", " ", " "},
+			{" ", " ", " ", " ", " ", " ", " ", " "},
+			{" ", " ", " ", " ", " ", " ", " ", " "},
+			{"P", "P", "P", "P", "P", "P", "P", "P"},
+			{"R", "B", "N", "Q", "K", "N", "B", "R"},
+		},
+		WhiteTurn: true, CastlingRights: 4, EnPassantSquare: 0,
+	}
+
+	w.Header().Add("Content-Type", "text/html")
+
+	// fmt.Println(state.GetHtml())
+
+	fmt.Fprintf(w, "%s", state.GetHtml())
+	// http.ServeFile(w, r, "static/chess.html")
 }
 
 func GetGames(w http.ResponseWriter, r *http.Request) {

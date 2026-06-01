@@ -8,7 +8,7 @@ func main() {
 
 	// Expecting that all requests have the users' username in the header , --header "Username: <username>"
 
-	http.HandleFunc("/", Chess)
+	// http.HandleFunc("/", Chess)
 
 	// StartGame - POST
 	// Pass in ID of opponent (username)
@@ -41,6 +41,8 @@ func main() {
 	http.HandleFunc("/GetGame", GetGame)
 	http.HandleFunc("/MakeMove", MakeMove)
 	http.HandleFunc("/ViewGame", ViewGame)
+
+	// http.Handle("/ViewGame", http.StripPrefix("/ViewGame/", http.FileServer(http.Dir("./static/chess.html"))))
 
 	http.ListenAndServe(":8090", nil)
 }
