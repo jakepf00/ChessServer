@@ -45,14 +45,14 @@ func GetStartingGameState(client_user, opp_user string) StartingGameStateStruct 
 		NewGameId: uuid.New(),
 		GameState: GameState{
 			Board: [8][8]string{
-				{"r", "b", "n", "q", "k", "n", "b", "r"},
+				{"r", "n", "b", "q", "k", "b", "n", "r"},
 				{"p", "p", "p", "p", "p", "p", "p", "p"},
 				{" ", " ", " ", " ", " ", " ", " ", " "},
 				{" ", " ", " ", " ", " ", " ", " ", " "},
 				{" ", " ", " ", " ", " ", " ", " ", " "},
 				{" ", " ", " ", " ", " ", " ", " ", " "},
 				{"P", "P", "P", "P", "P", "P", "P", "P"},
-				{"R", "B", "N", "Q", "K", "N", "B", "R"},
+				{"R", "N", "B", "Q", "K", "B", "N", "R"},
 			},
 			WhiteTurn: true, CastlingRights: 4, EnPassantSquare: 0,
 		},
