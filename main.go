@@ -1,10 +1,24 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
+	"log"
 	"net/http"
 )
 
 func main() {
+
+	if err := godotenv.Load(); err != nil {
+		println("Failure to load!")
+	}
+
+	Test()
+
+	err := CreateTable("abc")
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Expecting that all requests have the users' username in the header , --header "Username: <username>"
 
