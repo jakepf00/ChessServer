@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -12,12 +13,12 @@ func main() {
 		println("Failure to load!")
 	}
 
-	Test()
-
-	err := CreateTable("abc")
+	err := UsersToDB("test_user")
 
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		fmt.Println("Added user to db")
 	}
 
 	// Expecting that all requests have the users' username in the header , --header "Username: <username>"

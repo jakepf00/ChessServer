@@ -16,10 +16,12 @@ type ColorIdMap struct {
 	Black string `json:"black"` //maps to user ids
 }
 
-type StartingGameStateStruct struct {
-	StartingGameState ColorIdMap `json:"starting_game_state"`
-	NewGameId         uuid.UUID  `json:"new_game_id"`
-	GameState         GameState  `json:"game_state"`
+// TODO: better name... the whole state of a game... who is playing the game
+// To be stored in the database
+type WholeGameState struct {
+	GameId    uuid.UUID  `json:"game_id"`
+	GameState GameState  `json:"game_state"`
+	Users     ColorIdMap `json:"users"`
 }
 
 type StartingGameReq struct {
@@ -34,15 +36,15 @@ type MakeMoveReq struct {
 	EndCol   int       `json:"end_col"`
 }
 
-func GetStartingGameState(client_user, opp_user string) StartingGameStateStruct {
+func GetStartingGameState(client_user, opp_user string) WholeGameState {
 	index := rand.Intn(2)
 
-	return StartingGameStateStruct{
-		StartingGameState: ColorIdMap{
+	return WholeGameState{
+		Users: ColorIdMap{
 			White: [2]string{client_user, opp_user}[index],
 			Black: [2]string{client_user, opp_user}[1-index],
 		},
-		NewGameId: uuid.New(),
+		GameId: uuid.New(),
 		GameState: GameState{
 			Board: [8][8]string{
 				{"r", "b", "n", "q", "k", "n", "b", "r"},
@@ -123,7 +125,7 @@ func StartGame(w http.ResponseWriter, r *http.Request) {
 
 	starting_game_state := GetStartingGameState(username, opp_username)
 
-	game_map[starting_game_state.NewGameId.String()] = &starting_game_state.GameState
+	game_map[starting_game_state.GameId.String()] = &starting_game_state.GameState
 
 	json.NewEncoder(w).Encode(starting_game_state)
 }
