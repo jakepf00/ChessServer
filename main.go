@@ -13,7 +13,11 @@ func main() {
 		println("Failure to load!")
 	}
 
-	err := UsersToDB("test_user")
+	// err := UsersToDB("test_user")
+
+	gs := GetStartingGameState("test_user1", "test_user2")
+
+	err := WholeGameStateToDB(&gs)
 
 	if err != nil {
 		log.Fatal(err)

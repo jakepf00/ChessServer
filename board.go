@@ -96,3 +96,15 @@ func (gs *GameState) GetHtml() string {
 
 	return getFull(to_return.String())
 }
+
+func (gs *GameState) GetBoardString() string {
+	var board_string strings.Builder
+	board_string.Grow(64)
+
+	for _, row := range gs.Board {
+		for _, square := range row {
+			fmt.Fprintf(&board_string, square)
+		}
+	}
+	return board_string.String()
+}

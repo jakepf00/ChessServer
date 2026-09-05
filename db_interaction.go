@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func UsersToDB(user_id string) error {
 	// NOTE: possible UTF-8 issue here
@@ -23,8 +25,47 @@ func UsersToDB(user_id string) error {
 	return nil
 }
 
-func WholeGameStateToDB(wholeGameState *WholeGameState) {
-	// wholeGameState.GameId
+func WholeGameStateToDB(wholeGameState *WholeGameState) error {
 
-	// InsertRow()
+	err := DBExecute(
+		`CREATE TABLE IF NOT EXISTS games(
+			game_id VARCHAR(36),
+			user_white VARCHAR(50),
+			user_black VARCHAR(50),
+			board VARCHAR(64),
+			white_turn BOOLEAN,
+			castling_rights SMALLINT,
+			en_passant_square SMALLINT
+		);`,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	var white_turn string
+	if wholeGameState.GameState.WhiteTurn {
+		white_turn = "TRUE"
+	} else {
+		white_turn = "FALSE"
+	}
+
+	err = DBExecute(
+		fmt.Sprintf(
+			`INSERT INTO games (game_id, user_white, user_black, board, white_turn, castling_rights, en_passant_square) VALUES ('%s', '%s', '%s', '%s', %s, %d, %d);`,
+			wholeGameState.GameId.String(),
+			wholeGameState.Users.White,
+			wholeGameState.Users.Black,
+			wholeGameState.GameState.GetBoardString(),
+			white_turn,
+			wholeGameState.GameState.CastlingRights,
+			wholeGameState.GameState.EnPassantSquare,
+		),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
