@@ -15,9 +15,10 @@ func main() {
 
 	// err := UsersToDB("test_user")
 
-	gs := GetStartingGameState("test_user1", "test_user2")
+	// gs := GetStartingGameState("test_user1", "test_user2")
+	// err := WholeGameStateToDB(&gs)
 
-	err := WholeGameStateToDB(&gs)
+	err := GetGameStateFromDB("e558ac34-6a9d-4dc7-9a7d-156e94773fb1")
 
 	if err != nil {
 		log.Fatal(err)

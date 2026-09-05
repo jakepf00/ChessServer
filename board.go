@@ -108,3 +108,11 @@ func (gs *GameState) GetBoardString() string {
 	}
 	return board_string.String()
 }
+
+func (gs *GameState) UnpackBoardString(board_string string) {
+	for i := range 8 {
+		for j := range 8 {
+			gs.Board[i][j] = string(board_string[8*i+j])
+		}
+	}
+}

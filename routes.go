@@ -125,7 +125,9 @@ func StartGame(w http.ResponseWriter, r *http.Request) {
 
 	starting_game_state := GetStartingGameState(username, opp_username)
 
-	game_map[starting_game_state.GameId.String()] = &starting_game_state.GameState
+	// game_map[starting_game_state.GameId.String()] = &starting_game_state.GameState
+
+	WholeGameStateToDB(&starting_game_state)
 
 	json.NewEncoder(w).Encode(starting_game_state)
 }

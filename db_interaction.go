@@ -25,11 +25,33 @@ func UsersToDB(user_id string) error {
 	return nil
 }
 
+func GetGameStateFromDB(game_id string) error {
+	var temp_board string
+	var whole_game_state WholeGameState
+
+	QueryRow(
+		fmt.Sprintf("SELECT game_id, user_white, user_black, board, white_turn, castling_rights, en_passant_square FROM games WHERE game_id = '%s'", game_id),
+		&whole_game_state.GameId,
+		&whole_game_state.Users.White,
+		&whole_game_state.Users.Black,
+		&temp_board,
+		&whole_game_state.GameState.WhiteTurn,
+		&whole_game_state.GameState.CastlingRights,
+		&whole_game_state.GameState.EnPassantSquare,
+	)
+
+	whole_game_state.GameState.UnpackBoardString(temp_board)
+
+	fmt.Println(whole_game_state)
+
+	return nil
+}
+
 func WholeGameStateToDB(wholeGameState *WholeGameState) error {
 
 	err := DBExecute(
 		`CREATE TABLE IF NOT EXISTS games(
-			game_id VARCHAR(36),
+			game_id VARCHAR(36) PRIMARY KEY,
 			user_white VARCHAR(50),
 			user_black VARCHAR(50),
 			board VARCHAR(64),

@@ -35,21 +35,20 @@ func DBExecute(sql string) error {
 	return err
 }
 
-func Test() {
+func QueryRow(sql string, results ...any) error {
 
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 	defer conn.Close(context.Background())
 
-	var greeting string
-	err = conn.QueryRow(context.Background(), "select 'Hello, world!'").Scan(&greeting)
+	err = conn.QueryRow(context.Background(), sql).Scan(results...)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 
-	fmt.Println(greeting)
+	return nil
 }
