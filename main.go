@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/joho/godotenv"
 	"log"
@@ -12,6 +13,10 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		println("Failure to load!")
 	}
+
+	conn := getConnection()
+
+	defer conn.Close(context.Background())
 
 	// err := UsersToDB("test_user")
 

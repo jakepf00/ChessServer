@@ -7,14 +7,29 @@ import (
 	"os"
 )
 
-// NON-QUERIES
-func DBExecute(sql string) error {
+var _connection *pgx.Conn
+
+// TODO: future if necessary can make this into a connection map should we have to deal with multiple databases
+// TODO: error...
+func getConnection() *pgx.Conn {
+	if _connection != nil {
+		return _connection
+	}
+
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
-	defer conn.Close(context.Background())
+	// TODO: how to close connection
+	// defer conn.Close(context.Background())
+
+	return conn
+}
+
+// NON-QUERIES
+func DBExecute(sql string) error {
+	conn := getConnection()
 
 	tx, err := conn.Begin(context.Background())
 
@@ -36,15 +51,9 @@ func DBExecute(sql string) error {
 }
 
 func QueryRow(sql string, results ...any) error {
+	conn := getConnection()
 
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		return err
-	}
-	defer conn.Close(context.Background())
-
-	err = conn.QueryRow(context.Background(), sql).Scan(results...)
+	err := conn.QueryRow(context.Background(), sql).Scan(results...)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		return err
