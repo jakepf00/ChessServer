@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-var game_map = make(map[string]*GameState)
+// var game_map = make(map[string]*GameState)
 
 type ColorIdMap struct {
 	White string `json:"white"` //maps to user ids
@@ -158,18 +158,27 @@ func MakeMove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	game_state, ok := game_map[req.GameId.String()]
+	// game_state, ok := game_map[req.GameId.String()]
 
-	if !ok {
+	whole_game_state, err := GetGameStateFromDB(req.GameId.String())
+
+	if err != nil {
 		json.NewEncoder(w).Encode(map[string]string{"ERROR": "Could not find game state"})
 		return
 	}
 
-	game_state.Board[req.EndRow][req.EndCol] = game_state.Board[req.StartRow][req.StartCol]
-	game_state.Board[req.StartRow][req.StartCol] = " "
-	game_state.WhiteTurn = game_state.WhiteTurn != true // flips it
+	whole_game_state.GameState.Board[req.EndRow][req.EndCol] = whole_game_state.GameState.Board[req.StartRow][req.StartCol]
+	whole_game_state.GameState.Board[req.StartRow][req.StartCol] = " "
+	whole_game_state.GameState.WhiteTurn = whole_game_state.GameState.WhiteTurn != true // flips it
 
-	json.NewEncoder(w).Encode(game_state)
+	to_db_err := WholeGameStateToDB(&whole_game_state)
+
+	if to_db_err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"ERROR": "Could not add game_state to db"})
+		return
+	}
+
+	json.NewEncoder(w).Encode(whole_game_state.GameState)
 }
 
 func ViewGame(w http.ResponseWriter, r *http.Request) {
@@ -179,14 +188,15 @@ func ViewGame(w http.ResponseWriter, r *http.Request) {
 
 	// fmt.Println(state.GetHtml())
 
-	state, ok := game_map[game_id]
+	// state, ok := game_map[game_id]
+	state, err := GetGameStateFromDB(game_id)
 
-	if !ok {
+	if err != nil {
 		json.NewEncoder(w).Encode(map[string]string{"ERROR": "Could not find game id"})
 		return
 	}
 
-	fmt.Fprintf(w, "%s", state.GetHtml())
+	fmt.Fprintf(w, "%s", state.GameState.GetHtml())
 	// http.ServeFile(w, r, "static/chess.html")
 }
 

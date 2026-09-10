@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 )
 
 func UsersToDB(user_id string) error {
@@ -25,11 +26,11 @@ func UsersToDB(user_id string) error {
 	return nil
 }
 
-func GetGameStateFromDB(game_id string) error {
+func GetGameStateFromDB(game_id string) (WholeGameState, error) {
 	var temp_board string
 	var whole_game_state WholeGameState
 
-	QueryRow(
+	err := QueryRow(
 		fmt.Sprintf("SELECT game_id, user_white, user_black, board, white_turn, castling_rights, en_passant_square FROM games WHERE game_id = '%s'", game_id),
 		&whole_game_state.GameId,
 		&whole_game_state.Users.White,
@@ -40,11 +41,13 @@ func GetGameStateFromDB(game_id string) error {
 		&whole_game_state.GameState.EnPassantSquare,
 	)
 
+	if err != nil {
+		return WholeGameState{}, err
+	}
+
 	whole_game_state.GameState.UnpackBoardString(temp_board)
 
-	fmt.Println(whole_game_state)
-
-	return nil
+	return whole_game_state, nil
 }
 
 func WholeGameStateToDB(wholeGameState *WholeGameState) error {
@@ -74,7 +77,15 @@ func WholeGameStateToDB(wholeGameState *WholeGameState) error {
 
 	err = DBExecute(
 		fmt.Sprintf(
-			`INSERT INTO games (game_id, user_white, user_black, board, white_turn, castling_rights, en_passant_square) VALUES ('%s', '%s', '%s', '%s', %s, %d, %d);`,
+			`INSERT INTO games (
+				game_id,
+				user_white,
+				user_black, 
+				board,
+				white_turn,
+				castling_rights,
+				en_passant_square
+			) VALUES ('%s', '%s', '%s', '%s', %s, %d, %d);`,
 			wholeGameState.GameId.String(),
 			wholeGameState.Users.White,
 			wholeGameState.Users.Black,
@@ -86,6 +97,7 @@ func WholeGameStateToDB(wholeGameState *WholeGameState) error {
 	)
 
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "Insertion Error: %v\n", err)
 		return err
 	}
 

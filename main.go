@@ -2,9 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/joho/godotenv"
-	"log"
 	"net/http"
 )
 
@@ -19,17 +17,8 @@ func main() {
 	defer conn.Close(context.Background())
 
 	// err := UsersToDB("test_user")
-
 	// gs := GetStartingGameState("test_user1", "test_user2")
 	// err := WholeGameStateToDB(&gs)
-
-	err := GetGameStateFromDB("e558ac34-6a9d-4dc7-9a7d-156e94773fb1")
-
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		fmt.Println("Added user to db")
-	}
 
 	// Expecting that all requests have the users' username in the header , --header "Username: <username>"
 
